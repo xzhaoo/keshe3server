@@ -1,11 +1,7 @@
 package com.keshe3.keshe3server;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-
-import java.util.Collections;
 
 public class CodeGenerator {
     public static void main(String[] args) {
@@ -39,12 +35,15 @@ public class CodeGenerator {
                             .columnNaming(NamingStrategy.underline_to_camel)
                             .controllerBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在controllerBuilder中
+                            .mapperBuilder()
+                            .disableMapperXml()
+                            .enableFileOverride() // 开启文件覆盖 - 在mapperBuilder中
+//                            .disableXml() // 禁止生成XML文件
                             .serviceBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在serviceBuilder中
                             .formatServiceFileName("I%sService") // service接口命名规则
                             .formatServiceImplFileName("%sServiceImpl"); // service实现类命名规则
                 })
-//                .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板
                 .execute();
     }
 }
