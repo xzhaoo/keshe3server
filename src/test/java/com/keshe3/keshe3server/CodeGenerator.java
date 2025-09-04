@@ -38,7 +38,6 @@ public class CodeGenerator {
                             .mapperBuilder()
                             .disableMapperXml()
                             .enableFileOverride() // 开启文件覆盖 - 在mapperBuilder中
-//                            .disableXml() // 禁止生成XML文件
                             .serviceBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在serviceBuilder中
                             .formatServiceFileName("I%sService") // service接口命名规则
