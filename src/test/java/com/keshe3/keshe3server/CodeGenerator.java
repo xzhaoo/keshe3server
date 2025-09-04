@@ -27,7 +27,7 @@ public class CodeGenerator {
                             .controller("controller"); // controller包名
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("user") // 设置需要生成的表名，替换为实际表名
+                    builder.addInclude("task") // 设置需要生成的表名，替换为实际表名
                             .entityBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在entityBuilder中
                             .enableLombok() // 启用lombok
