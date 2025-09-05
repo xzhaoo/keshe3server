@@ -4,7 +4,6 @@ CREATE TABLE `user`  (
                    `user_name` varchar(20) NOT NULL COMMENT '用户名称',
                    `user_password` varchar(20) NOT NULL COMMENT '用户密码',
                    `user_email` varchar(20) NOT NULL COMMENT '用户邮箱',
-                   `user_phone` varchar(20) NOT NULL COMMENT '用户手机号',
                    `user_permission` varchar(2) NOT NULL COMMENT '用户权限',
                    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表';

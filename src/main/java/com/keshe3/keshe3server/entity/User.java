@@ -10,7 +10,7 @@ import lombok.Setter;
  * </p>
  *
  * @author CodeGenerator
- * @since 2025-09-04
+ * @since 2025-09-05
  */
 @Getter
 @Setter
@@ -37,11 +37,6 @@ import lombok.Setter;
      * 用户邮箱
      */
       private String userEmail;
-
-      /**
-     * 用户手机号
-     */
-      private String userPhone;
 
       /**
      * 用户权限

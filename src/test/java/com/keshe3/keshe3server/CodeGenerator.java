@@ -27,7 +27,7 @@ public class CodeGenerator {
                             .controller("controller"); // controller包名
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("task") // 设置需要生成的表名，替换为实际表名
+                    builder.addInclude("media") // 设置需要生成的表名，替换为实际表名
                             .entityBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在entityBuilder中
                             .enableLombok() // 启用lombok
@@ -41,7 +41,7 @@ public class CodeGenerator {
                             .serviceBuilder()
                             .enableFileOverride() // 开启文件覆盖 - 在serviceBuilder中
                             .formatServiceFileName("I%sService") // service接口命名规则
-                            .formatServiceImplFileName("%sServiceImpl"); // service实现类命名规则
+                            .formatServiceImplFileName("%sService"); // service实现类命名规则
                 })
                 .execute();
     }
