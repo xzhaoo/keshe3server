@@ -1,18 +1,20 @@
 package com.keshe3.keshe3server.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.keshe3.keshe3server.entity.Task;
+import com.keshe3.keshe3server.service.ITaskService;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * <p>
- * 任务表 前端控制器
- * </p>
- *
- * @author CodeGenerator
- * @since 2025-09-06
- */
+* <p>
+* 任务表 前端控制器
+* </p>
+*
+* @author CodeGenerator
+* @since 2025-09-06
+*/
 @RestController
-@RequestMapping("/keshe3server/task")
+@RequestMapping("task")
 public class TaskController {
 
 }

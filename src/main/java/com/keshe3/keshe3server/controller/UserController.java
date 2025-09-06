@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2025-09-05
  */
 @RestController
-@RequestMapping("/keshe3server/user")
+@RequestMapping("user")
 public class UserController {
     @Autowired
     private IUserService userService;

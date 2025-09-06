@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 public class CodeGenerator {
     public static void main(String[] args) {
-        generateCode("task");
+        generateCode("media");
     }
 
     public static void generateCode(String tableName) {
