@@ -1,8 +1,8 @@
 package com.keshe3.keshe3server.entity;
 
 import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
 
 /**
  * <p>
@@ -12,34 +12,33 @@ import lombok.Setter;
  * @author CodeGenerator
  * @since 2025-09-05
  */
-@Getter
-@Setter
-  public class User implements Serializable {
+@Data
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      /**
+    /**
      * 用户编号
      */
-        private String id;
+    private String id;
 
-      /**
+    /**
      * 用户名称
      */
-      private String userName;
+    private String userName;
 
-      /**
+    /**
      * 用户密码
      */
-      private String userPassword;
+    private String userPassword;
 
-      /**
+    /**
      * 用户邮箱
      */
-      private String userEmail;
+    private String userEmail;
 
-      /**
+    /**
      * 用户权限
      */
-      private String userPermission;
+    private String userPermission;
 }

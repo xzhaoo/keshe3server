@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author CodeGenerator
- * @since 2025-09-05
+ * @since 2025-09-06
  */
 public interface TaskMapper extends BaseMapper<Task> {
 

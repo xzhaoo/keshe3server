@@ -1,7 +1,7 @@
 package com.keshe3.keshe3server.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Controller;
  * </p>
  *
  * @author CodeGenerator
- * @since 2025-09-05
+ * @since 2025-09-06
  */
-@Controller
+@RestController
 @RequestMapping("/keshe3server/media")
 public class MediaController {
 

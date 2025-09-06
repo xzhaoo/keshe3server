@@ -9,7 +9,7 @@ import com.keshe3.keshe3server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * @author CodeGenerator
  * @since 2025-09-05
  */
-@Controller
+@RestController
 @RequestMapping("/keshe3server/user")
 public class UserController {
     @Autowired
@@ -35,6 +35,7 @@ public class UserController {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUserName, req.getUserName());
         wrapper.eq(User::getUserPassword, req.getUserPassword());
+        System.out.println("login");
         if(userService.list(wrapper) != null)
             return TzResp.success(true);
         return TzResp.success(false);
