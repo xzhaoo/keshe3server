@@ -5,6 +5,7 @@ import com.keshe3.keshe3server.entity.User;
 import com.keshe3.keshe3server.req.UserLoginReq;
 import com.keshe3.keshe3server.req.UserSearchReq;
 import com.keshe3.keshe3server.resp.TzResp;
+import com.keshe3.keshe3server.resp.UserInfoResp;
 import com.keshe3.keshe3server.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,14 +32,27 @@ public class UserController {
      * 登录
      */
     @PostMapping("login")
-    public TzResp<Boolean> login(UserLoginReq req) {
+    public TzResp<UserInfoResp> login(UserLoginReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUserName, req.getUserName());
         wrapper.eq(User::getUserPassword, req.getUserPassword());
-        System.out.println("login");
-        if(userService.list(wrapper) != null)
-            return TzResp.success(true);
-        return TzResp.success(false);
+
+        User user = userService.getOne(wrapper);
+
+        if (user != null) {
+            System.out.println("登录成功");
+
+            // 创建并填充 UserInfoResp
+            UserInfoResp userInfoResp = new UserInfoResp();
+            userInfoResp.setUserId(user.getId());
+            userInfoResp.setUserName(user.getUserName());
+            userInfoResp.setUserEmail(user.getUserEmail());
+
+            return TzResp.success(userInfoResp);
+        }
+
+        // 登录失败，返回空对象或null
+        return TzResp.fail(201);
     }
 
     /**
