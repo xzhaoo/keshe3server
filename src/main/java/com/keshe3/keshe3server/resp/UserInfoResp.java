@@ -24,4 +24,9 @@ public class UserInfoResp {
      * 用户权限
      */
     private String userPermission;
+
+    /**
+     * token
+     */
+    private String token;
 }

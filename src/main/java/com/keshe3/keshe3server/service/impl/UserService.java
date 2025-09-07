@@ -50,9 +50,9 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
         }
 
         // 查询：用户邮箱
-        String userEmail = req.getUserName();
+        String userEmail = req.getUserEmail();
         if (userEmail != null && !userEmail.isEmpty()) {
-            wrapper.in(User::getUserEmail, userEmail);
+            wrapper.like(User::getUserEmail, userEmail);
         }
 
         Integer index = req.getPageIndex();
