@@ -45,6 +45,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // Token无效，返回未授权错误
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write("{\"code\": 401, \"data\": \"Token无效或已过期\"}");
         return false;
     }
