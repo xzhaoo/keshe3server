@@ -7,7 +7,17 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${file.upload-dir}
 
 jwt:
   secret: tzkeshe3in2025KFC666Man8OuthJMdmLdHj8hYKlnOmjLmanBoyeLayElamaNbo88Amn4WcaosiNDemaNZKKnhmn
   expiration: 2592000000 # 30天
+
+file:
+  upload-dir: uploads

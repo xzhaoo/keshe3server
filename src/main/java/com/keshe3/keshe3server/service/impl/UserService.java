@@ -35,6 +35,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @param req
      * @return List<User>
      */
+    @Override
     public List<User> search(UserSearchReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户编号
@@ -69,6 +70,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @param req
      * @return boolean
      */
+    @Override
     public boolean delete(UserSearchReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户编号
@@ -93,6 +95,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @param req
      * @return boolean
      */
+    @Override
     public boolean changePassword(UserLoginReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户名称
@@ -125,6 +128,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @param req
      * @return boolean
      */
+    @Override
     public boolean addUser(UserLoginReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户名称

@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-09-06
  */
 public interface ITaskService extends IService<Task> {
-
+    void deleteTaskByMediaId(String mediaId);
 }
