@@ -62,7 +62,7 @@ public class MediaController {
             // 生成唯一文件名
             String originalFilename = file.getOriginalFilename();
             String fileExtension = StringUtils.getFilenameExtension(originalFilename);
-            String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+            String uniqueFileName = UUID.randomUUID().toString() + "." + fileExtension;
 
             // 保存文件
             Path filePath = Paths.get(uploadDir, uniqueFileName);
