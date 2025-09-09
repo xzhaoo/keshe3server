@@ -17,10 +17,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TaskService extends ServiceImpl<TaskMapper, Task> implements ITaskService {
+    /**
+     * 根据媒体ID删除任务
+     * @param mediaId 媒体ID，用于定位要删除的任务
+     */
     @Override
     public void deleteTaskByMediaId(String mediaId) {
         LambdaQueryWrapper<Task> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Task::getMediaId, mediaId);
+
         this.remove(wrapper);
     }
 }

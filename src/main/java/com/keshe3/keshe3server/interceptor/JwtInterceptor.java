@@ -14,6 +14,14 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Autowired
     private JwtUtils jwtUtils;
 
+    /**
+     * 拦截器的前置处理方法，用于处理请求前的权限验证
+     * @param request 当前HTTP请求对象
+     * @param response 当前HTTP响应对象
+     * @param handler 请求处理方法
+     * @return 是否放行请求
+     * @throws Exception 可能抛出的异常
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 如果是OPTIONS请求，则放行

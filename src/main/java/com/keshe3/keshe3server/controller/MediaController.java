@@ -55,7 +55,7 @@ public class MediaController {
      */
     @PostMapping("upload")
     public TzResp<?> uploadFile(@RequestParam("file") MultipartFile file,
-                                HttpServletRequest request) { // 移除userId参数，改为从request获取
+                                HttpServletRequest request) {
         Path filePath = null;
         try (InputStream inputStream = file.getInputStream()) {
             // 从请求属性中获取用户ID（由JWT拦截器设置）
