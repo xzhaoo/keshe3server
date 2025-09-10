@@ -1,11 +1,14 @@
 package com.keshe3.keshe3server.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * 日期时间工具类
  */
+@Component
 public class DateUtils {
 
     private static final String DEFAULT_PATTERN = "yyyyMMddHHmmss";

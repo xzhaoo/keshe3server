@@ -40,7 +40,7 @@ public interface IMediaService extends IService<Media> {
      * @param mediaSize 媒体大小，以字节为单位表示的媒体文件大小
      * @return 返回布尔值，表示媒体信息是否构建成功
      */
-    boolean buildMediaInfo(String userId, String mediaType, String mediaName, long mediaSize);
+    String buildMediaInfo(String userId, String mediaType, String mediaName, long mediaSize);
 
 
 }

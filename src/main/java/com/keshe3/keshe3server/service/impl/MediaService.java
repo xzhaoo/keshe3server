@@ -108,15 +108,17 @@ public class MediaService extends ServiceImpl<MediaMapper, Media> implements IMe
      * @return
      */
     @Override
-    public boolean buildMediaInfo(String userId, String mediaType, String mediaName, long mediaSize) {
+    public String buildMediaInfo(String userId, String mediaType, String mediaName, long mediaSize) {
         Media media = new Media();
         media.setId("me" + idUtils.generateId());
         media.setUserId(userId);
         media.setMediaName(mediaName);
         media.setMediaType(mediaType);
         media.setMediaSize(mediaSize);
-        media.setMediaPath("/" + uploadDir + "/" + mediaName);
         media.setUploadTime(LocalDateTime.now());
-        return save(media);
+        if(save(media)) {
+            return media.getId();
+        }
+        return null;
     }
 }

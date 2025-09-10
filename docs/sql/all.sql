@@ -15,7 +15,7 @@ CREATE TABLE `media`  (
                           `media_name` varchar(255) NOT NULL COMMENT '媒体名称',
                           `media_type` varchar(2) NOT NULL COMMENT '媒体类型',
                           `media_size` bigint NOT NULL COMMENT '媒体大小',
-                          `media_path` varchar(255) NOT NULL COMMENT '媒体存储路径',
+                          `media_path` varchar(255) NULL DEFAULT NULL COMMENT '媒体存储路径',
                           `upload_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
                           PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '媒体表';
@@ -26,7 +26,7 @@ CREATE TABLE `task`  (
                           `user_id` varchar(20) NOT NULL COMMENT '上传用户ID',
                           `media_id` varchar(20) NOT NULL COMMENT '媒体编号',
                           `start_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '任务开始时间',
-                          `end_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '任务结束时间',
-                          `task_status` varchar(20) NOT NULL COMMENT '任务状态',
+                          `end_time` datetime NULL DEFAULT NULL COMMENT '任务结束时间',
+                          `task_status` varchar(2) NOT NULL COMMENT '任务状态',
                           PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务表';
