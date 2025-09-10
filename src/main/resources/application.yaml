@@ -21,3 +21,6 @@ jwt:
 
 file:
   upload-dir: uploads
+
+python:
+  script-path: /path/to/your/script.py

@@ -3,6 +3,7 @@ package com.keshe3.keshe3server.service;
 import com.keshe3.keshe3server.entity.Task;
 import com.keshe3.keshe3server.enums.ETaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +16,9 @@ public class PythonScriptService {
     @Autowired
     private ITaskService taskService;
 
+    @Value("${python.script-path}")
+    private String pythonScriptPath;
+
     /**
      * 执行python脚本
      * @param file
@@ -24,7 +28,7 @@ public class PythonScriptService {
         Process process = null;
         try {
             // 构建命令
-            String[] command = {"python", "/path/to/your/script.py"};
+            String[] command = {"python", pythonScriptPath};
 
             // 启动进程
             ProcessBuilder processBuilder = new ProcessBuilder(command);
