@@ -121,4 +121,21 @@ public class MediaService extends ServiceImpl<MediaMapper, Media> implements IMe
         }
         return null;
     }
+
+    /**
+     * 设置媒体资源的路径
+     * @param mediaId 媒体资源的唯一标识ID
+     * @param mediaPath 媒体资源的存储路径
+     * @return 更新成功返回true，失败返回false
+     */
+    @Override
+    public boolean setMediaPath(String mediaId, String mediaPath) {
+        Media media = getById(mediaId);
+        if(media != null) {
+            media.setMediaPath(mediaPath);
+            return updateById(media);
+        }
+
+        return false;
+    }
 }

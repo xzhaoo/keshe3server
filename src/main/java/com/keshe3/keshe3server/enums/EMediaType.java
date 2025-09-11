@@ -1,7 +1,7 @@
 package com.keshe3.keshe3server.enums;
 
 public enum EMediaType {
-    PICTURE("01", "picture"),
+    IMAGE("01", "picture"),
     VIDEO("02", "video");
 
     private final String code;

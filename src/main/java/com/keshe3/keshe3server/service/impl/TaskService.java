@@ -45,7 +45,7 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> implements ITaskS
      * @return 构建并保存成功的任务对象，如果保存失败则返回null
      */
     @Override
-    public Task buildTaskInfo(String userId, String mediaId) {
+    public String buildTaskInfo(String userId, String mediaId) {
         Task task = new Task();
         task.setId("tk" + idUtils.generateId());
         task.setUserId(userId);
@@ -54,7 +54,7 @@ public class TaskService extends ServiceImpl<TaskMapper, Task> implements ITaskS
         task.setTaskStatus("01");
 
         if(save(task)) {
-            return task;
+            return task.getId();
         }
         return null;
     }

@@ -25,9 +25,9 @@ public interface ITaskService extends IService<Task> {
      * 构建任务信息的方法
      * @param userId 用户ID，用于标识用户身份
      * @param mediaId 媒体ID，用于标识特定的媒体资源
-     * @return 返回一个Task对象，包含构建好的任务信息
+     * @return 返回一个TaskId
      */
-    Task buildTaskInfo(String userId, String mediaId);
+    String buildTaskInfo(String userId, String mediaId);
 
     /**
      * 更新任务状态

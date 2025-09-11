@@ -42,5 +42,11 @@ public interface IMediaService extends IService<Media> {
      */
     String buildMediaInfo(String userId, String mediaType, String mediaName, long mediaSize);
 
-
+    /**
+     * 设置媒体文件路径的方法
+     * @param mediaId 媒体文件的唯一标识符
+     * @param mediaPath 媒体文件的存储路径
+     * @return 设置成功返回true，设置失败返回false
+     */
+    boolean setMediaPath(String mediaId, String mediaPath);
 }
