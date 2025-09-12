@@ -39,14 +39,14 @@ public interface IUserService extends IService<User> {
      * @param req 包含用户登录信息的请求对象，用于验证用户身份并设置新密码
      * @return 修改密码操作是否成功，成功返回true，失败返回false
      */
-    boolean changePassword(UserLoginReq req);
+    String changePassword(UserLoginReq req);
 
     /**
      * 添加用户的方法
      * @param req 用户登录请求对象，包含用户相关信息
      * @return 添加成功返回true，失败返回false
      */
-    boolean addUser(UserLoginReq req);
+    String addUser(UserLoginReq req);
 
     /**
      * 获取用户总数的方法

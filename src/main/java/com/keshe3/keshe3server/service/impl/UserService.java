@@ -95,21 +95,21 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @return boolean
      */
     @Override
-    public boolean changePassword(UserLoginReq req) {
+    public String changePassword(UserLoginReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户名称
         String userName = req.getUserName();
         if (userName != null && !userName.isEmpty()) {
             wrapper.eq(User::getUserName, userName);
         } else {
-            return false;
+            return null;
         }
 
         // 查询用户
         User user = getOne(wrapper);
         if (user == null) {
             // 用户不存在
-            return false;
+            return null;
         }
 
         // 获取新密码
@@ -119,7 +119,10 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
         user.setUserPassword(newPassword);
 
         // 保存更新
-        return updateById(user);
+        if(updateById(user)) {
+            return user.getId();
+        }
+        return null;
     }
 
     /**
@@ -128,7 +131,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
      * @return boolean
      */
     @Override
-    public boolean addUser(UserLoginReq req) {
+    public String addUser(UserLoginReq req) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         // 查询：用户名称
         String userName = req.getUserName();
@@ -137,7 +140,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
         long count = count(wrapper);
         if (count > 0) {
             // 用户名已存在
-            return false;
+            return null;
         }
 
         // 最大重试次数
@@ -169,7 +172,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
 
                 if (result) {
                     // 保存成功
-                    return true;
+                    return user.getId();
                 }
             } catch (DuplicateKeyException e) {
                 // 明确捕获唯一键冲突异常
@@ -177,7 +180,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
             } catch (Exception e) {
                 log.error("添加用户时发生未知错误", e);
                 // 其他异常，返回失败
-                return false;
+                return null;
             }
 
             attempts++;
@@ -193,7 +196,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
 
         // 所有尝试都失败
         log.error("添加用户失败，已达到最大重试次数: " + maxAttempts);
-        return false;
+        return null;
     }
 
     /**

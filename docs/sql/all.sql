@@ -30,3 +30,13 @@ CREATE TABLE `task`  (
                           `task_status` varchar(2) NOT NULL COMMENT '任务状态',
                           PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务表';
+
+DROP TABLE IF EXISTS `activity_log`;
+CREATE TABLE `activity_log`  (
+                         `id` int NOT NULL AUTO_INCREMENT COMMENT '日志编号',
+                         `user_id` varchar(20) NOT NULL COMMENT '用户ID',
+                         `action` varchar(255) NOT NULL COMMENT '操作',
+                         `details` varchar(255) NOT NULL COMMENT '细节',
+                         `time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+                         PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动日志记录表';

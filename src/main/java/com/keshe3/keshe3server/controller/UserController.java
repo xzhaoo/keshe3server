@@ -7,6 +7,7 @@ import com.keshe3.keshe3server.req.UserLoginReq;
 import com.keshe3.keshe3server.req.UserSearchReq;
 import com.keshe3.keshe3server.resp.TzResp;
 import com.keshe3.keshe3server.resp.UserInfoResp;
+import com.keshe3.keshe3server.service.IActivityLogService;
 import com.keshe3.keshe3server.service.IMediaService;
 import com.keshe3.keshe3server.service.IUserService;
 import com.keshe3.keshe3server.utils.JwtUtils;
@@ -39,6 +40,9 @@ public class UserController {
 
     @Autowired
     private IMediaService mediaService;
+
+    @Autowired
+    private IActivityLogService activityLogService;
 
     /**
      * 权限检查方法
@@ -80,6 +84,7 @@ public class UserController {
             userInfoResp.setUserPermission(user.getUserPermission());
             userInfoResp.setToken(token);
 
+            activityLogService.logActivity(user.getId(), "登录", "用户 " + user.getUserName() + "登录了");
             return TzResp.success(userInfoResp);
         }
 
@@ -95,7 +100,13 @@ public class UserController {
      */
     @PostMapping("register")
     public TzResp<Boolean> register(UserLoginReq req) {
-        return TzResp.success(userService.addUser(req));
+        String userId = userService.addUser(req);
+        if(userService.addUser(req) != null) {
+            activityLogService.logActivity(userId, "注册", "用户 " + req.getUserName() + "注册成功");
+            return TzResp.success(true);
+        }
+
+        return TzResp.fail(500,false);
     }
 
     /**
@@ -137,6 +148,7 @@ public class UserController {
             return TzResp.fail(403, false); // 无权限
         }
 
+        activityLogService.logActivity(req.getUserId(), "删除", "管理员删除了用户 " + req.getUserName());
         return TzResp.success(userService.delete(req));
     }
 
@@ -164,7 +176,13 @@ public class UserController {
                 return TzResp.fail(201, "用户不存在或密码错误");
             }
 
-            return TzResp.success(String.valueOf(userService.changePassword(req)));
+            String userId = userService.changePassword(req);
+            if (userId != null) {
+                activityLogService.logActivity(userId, "修改密码", "用户 " + req.getUserName() + "修改了密码");
+                return TzResp.success("true");
+            }
+
+            return TzResp.fail(500, "修改密码失败");
         }
 
         return TzResp.fail(403, "无操作权限"); // 无权限
@@ -186,7 +204,12 @@ public class UserController {
         }
 
         req.setUserPassword("123456");
-        return TzResp.success(userService.changePassword(req));
+        String userId = userService.changePassword(req);
+        if (userId != null) {
+            activityLogService.logActivity(userId, "重置密码", "管理员重置了用户 " + req.getUserName() + "的密码");
+            return TzResp.success(true);
+        }
+        return TzResp.success();
     }
 
     /**
@@ -209,6 +232,8 @@ public class UserController {
             long totalStorageBytes = mediaService.getTotalStorageSize();
             double totalStorageGB = totalStorageBytes / (1024.0 * 1024.0 * 1024.0);
             stats.put("storageUsed", String.format("%.2f", totalStorageGB));
+
+            stats.put("recentActivities", activityLogService.getRecentActivities(10));
 
             return TzResp.success(stats);
         } catch (Exception e) {
