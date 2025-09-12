@@ -49,4 +49,19 @@ public interface IMediaService extends IService<Media> {
      * @return 设置成功返回true，设置失败返回false
      */
     boolean setMediaPath(String mediaId, String mediaPath);
+
+    /**
+     * 获取媒体总数的方法
+     * 该方法用于统计系统中所有媒体资源的总数
+     *
+     * @return 返回一个long类型的数值，表示系统中媒体资源的总数
+     */
+    long getTotalMediaCount();
+
+    /**
+     * 获取总存储容量大小的方法
+     *
+     * @return 返回总存储容量的大小，以字节为单位，数据类型为long
+     */
+    long getTotalStorageSize();
 }

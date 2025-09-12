@@ -3,7 +3,6 @@ package com.keshe3.keshe3server.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.keshe3.keshe3server.entity.Media;
 import com.keshe3.keshe3server.mapper.MediaMapper;
-import com.keshe3.keshe3server.resp.TzResp;
 import com.keshe3.keshe3server.service.IMediaService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keshe3.keshe3server.utils.IdUtils;
@@ -137,5 +136,25 @@ public class MediaService extends ServiceImpl<MediaMapper, Media> implements IMe
         }
 
         return false;
+    }
+
+    /**
+     * 获取媒体总数的方法
+     *
+     * @return long 返回媒体的总数量
+     */
+    @Override
+    public long getTotalMediaCount() {
+        return count();
+    }
+
+    /**
+     * 获取总存储大小的方法
+     *
+     * @return 返回总存储大小的长整型数值
+     */
+    @Override
+    public long getTotalStorageSize() {
+        return getBaseMapper().selectTotalStorageSize();
     }
 }

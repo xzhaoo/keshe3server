@@ -2,10 +2,12 @@ package com.keshe3.keshe3server.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.keshe3.keshe3server.entity.User;
+import com.keshe3.keshe3server.enums.EUserPermission;
 import com.keshe3.keshe3server.req.UserLoginReq;
 import com.keshe3.keshe3server.req.UserSearchReq;
 import com.keshe3.keshe3server.resp.TzResp;
 import com.keshe3.keshe3server.resp.UserInfoResp;
+import com.keshe3.keshe3server.service.IMediaService;
 import com.keshe3.keshe3server.service.IUserService;
 import com.keshe3.keshe3server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,6 +37,9 @@ public class UserController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private IMediaService mediaService;
+
     /**
      * 权限检查方法
      * 检查当前用户是否具有管理员权限
@@ -42,8 +49,8 @@ public class UserController {
     private boolean checkAdminPermission(HttpServletRequest request) {
         // 从请求属性中获取用户权限信息
         String userPermission = (String) request.getAttribute("userPermission");
-        // 检查用户权限是否为"1"，如果是则返回true，否则返回false
-        return "1".equals(userPermission);
+        // 检查用户权限是否为"01"，如果是则返回true，否则返回false
+        return EUserPermission.ADMIN.getCode().equals(userPermission);
     }
 
     /**
@@ -100,7 +107,7 @@ public class UserController {
      *         成功时返回状态码200和用户列表数据
      *         无权限时返回状态码403
      */
-    @PostMapping("search")  // HTTP POST请求映射到/search路径
+    @PostMapping("search")
     public TzResp<List<User>> search(UserSearchReq req, HttpServletRequest request) {
         // 检查管理员权限
         if (!checkAdminPermission(request)) {
@@ -180,5 +187,33 @@ public class UserController {
 
         req.setUserPassword("123456");
         return TzResp.success(userService.changePassword(req));
+    }
+
+    /**
+     * 获取仪表盘统计数据接口
+     * @param request HTTP请求对象，用于权限验证
+     * @return 返回包含用户总数、媒体总数和存储使用情况的统计信息
+     */
+    @PostMapping("dashboardStats")
+    public TzResp<?> getDashboardStats(HttpServletRequest request) {
+        if (!checkAdminPermission(request)) {
+            return TzResp.fail(403, null);
+        }
+
+        try {
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("totalUsers", userService.getTotalUserCount());
+            stats.put("totalMedia", mediaService.getTotalMediaCount());
+
+            // 将字节转换为GB
+            long totalStorageBytes = mediaService.getTotalStorageSize();
+            double totalStorageGB = totalStorageBytes / (1024.0 * 1024.0 * 1024.0);
+            stats.put("storageUsed", String.format("%.2f", totalStorageGB));
+
+            return TzResp.success(stats);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return TzResp.fail(500, "获取统计信息失败: " + e.getMessage());
+        }
     }
 }

@@ -47,4 +47,11 @@ public interface IUserService extends IService<User> {
      * @return 添加成功返回true，失败返回false
      */
     boolean addUser(UserLoginReq req);
+
+    /**
+     * 获取用户总数的方法
+     *
+     * @return 返回系统中用户的总数量，类型为long
+     */
+    long getTotalUserCount();
 }

@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.keshe3.keshe3server.utils.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -163,7 +162,7 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
                 user.setUserEmail(req.getUserEmail());
 
                 // 设置用户权限
-                user.setUserPermission("0");
+                user.setUserPermission("02");
 
                 // 保存用户（这里会触发数据库的唯一约束检查）
                 boolean result = save(user);
@@ -195,5 +194,15 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IUserS
         // 所有尝试都失败
         log.error("添加用户失败，已达到最大重试次数: " + maxAttempts);
         return false;
+    }
+
+    /**
+     * 获取用户总数的方法
+     *
+     * @return 返回用户总数，通过调用count()方法获取
+     */
+    @Override
+    public long getTotalUserCount() {
+        return count();
     }
 }
