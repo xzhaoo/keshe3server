@@ -57,7 +57,7 @@ public class RestTemplateConfig {
         // 请求配置
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(30000) // 连接超时时间
-                .setSocketTimeout(60000)  // 读取超时时间
+                .setSocketTimeout(1800000)  // 读取超时时间 30分钟，处理视频需要花费时间
                 .setConnectionRequestTimeout(10000) // 从连接池获取连接的超时时间
                 .build();
 

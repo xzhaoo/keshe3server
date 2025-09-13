@@ -83,9 +83,9 @@ public class MediaController {
 
             // 判断文件类型（视频为1，图片为0）
             String contentType = file.getContentType();
-            String mediaType = "0"; // 默认为图片
+            String mediaType = "01"; // 默认为图片
             if (contentType != null && contentType.startsWith("video/")) {
-                mediaType = "1"; // 视频
+                mediaType = "02"; // 视频
             }
 
             // 创建媒体记录
@@ -175,15 +175,19 @@ public class MediaController {
             // 获取文件路径
             String filePath = media.getMediaPath().substring(1); // 移除开头的斜杠
             Path path = Paths.get(filePath);
+//            System.out.println(path);
 
             if (!Files.exists(path)) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
+            // 允许任何来源访问此资源，解决视频缩略图加载失败
+            response.setHeader("Access-Control-Allow-Origin", "*");
+
             // 设置响应头
             String contentType = Files.probeContentType(path);
-            System.out.println(contentType);
+//            System.out.println(contentType);
             if (contentType == null) {
                 // 根据文件扩展名设置明确的MIME类型
                 String fileName = media.getMediaName().toLowerCase();
@@ -247,6 +251,7 @@ public class MediaController {
             // 获取文件路径
             String filePath = media.getMediaPath().substring(1); // 移除开头的斜杠
             Path path = Paths.get(filePath);
+            System.out.println(path);
 
             if (!Files.exists(path)) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
