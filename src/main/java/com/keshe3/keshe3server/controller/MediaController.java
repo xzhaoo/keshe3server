@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -181,41 +184,107 @@ public class MediaController {
                 return;
             }
 
-            // 设置响应头
-            String contentType = Files.probeContentType(path);
-            System.out.println(contentType);
-            if (contentType == null) {
-                // 根据文件扩展名设置明确的MIME类型
-                String fileName = media.getMediaName().toLowerCase();
-                System.out.println(fileName);
-                if (fileName.endsWith(".png")) {
-                    contentType = "image/png";
-                } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
-                    contentType = "image/jpeg";
-                } else if (fileName.endsWith(".gif")) {
-                    contentType = "image/gif";
-                } else if (fileName.endsWith(".bmp")) {
-                    contentType = "image/bmp";
-                } else if (fileName.endsWith(".mp4")) {
-                    contentType = "video/mp4";
-                } else if (fileName.endsWith(".avi")) {
-                    contentType = "video/avi";
-                } else if (fileName.endsWith(".mov")) {
-                    contentType = "video/quicktime";
-                } else {
-                    contentType = "application/octet-stream";
-                }
-            }
+            long fileSize = Files.size(path);
+            String rangeHeader = request.getHeader("Range");
 
+            // 设置响应头
+            String contentType = determineContentType(media.getMediaName());
             response.setContentType(contentType);
             response.setHeader("Content-Disposition", "inline; filename=\"" + media.getMediaName() + "\"");
-            response.setContentLengthLong(Files.size(path));
 
-            // 将文件内容写入响应
-            Files.copy(path, response.getOutputStream());
+            // 处理范围请求（分片传输）
+            if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+                // 解析范围请求
+                String[] range = rangeHeader.substring(6).split("-");
+                long start = Long.parseLong(range[0]);
+                long end = range.length > 1 ? Long.parseLong(range[1]) : fileSize - 1;
+
+                // 确保范围有效
+                if (start >= fileSize) {
+                    response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+                    response.setHeader("Content-Range", "bytes */" + fileSize);
+                    return;
+                }
+
+                if (end >= fileSize) {
+                    end = fileSize - 1;
+                }
+
+                long contentLength = end - start + 1;
+
+                // 设置部分内容响应
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                response.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + fileSize);
+                response.setHeader("Content-Length", String.valueOf(contentLength));
+
+                // 传输指定范围的数据
+                try (InputStream is = Files.newInputStream(path);
+                     OutputStream os = response.getOutputStream()) {
+                    // 跳过指定字节
+                    long skipped = 0;
+                    while (skipped < start) {
+                        long n = is.skip(start - skipped);
+                        if (n <= 0) {
+                            // 无法跳过更多字节，可能已到达文件末尾
+                            break;
+                        }
+                        skipped += n;
+                    }
+
+                    // 确保我们跳到了正确的位置
+                    if (skipped < start) {
+                        response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+                        response.setHeader("Content-Range", "bytes */" + fileSize);
+                        return;
+                    }
+                    byte[] buffer = new byte[1024 * 64]; // 64KB缓冲区
+                    long remaining = contentLength;
+
+                    while (remaining > 0) {
+                        int read = is.read(buffer, 0, (int) Math.min(buffer.length, remaining));
+                        if (read == -1) break;
+                        os.write(buffer, 0, read);
+                        remaining -= read;
+                    }
+                }
+            } else {
+                // 完整文件请求
+                response.setHeader("Content-Length", String.valueOf(fileSize));
+
+                // 将文件内容写入响应
+                Files.copy(path, response.getOutputStream());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 根据文件名确定内容类型
+     * @param fileName
+     * @return
+     */
+    private String determineContentType(String fileName) {
+        String fileNameLower = fileName.toLowerCase();
+        if (fileNameLower.endsWith(".png")) {
+            return "image/png";
+        } else if (fileNameLower.endsWith(".jpg") || fileNameLower.endsWith(".jpeg")) {
+            return "image/jpeg";
+        } else if (fileNameLower.endsWith(".gif")) {
+            return "image/gif";
+        } else if (fileNameLower.endsWith(".bmp")) {
+            return "image/bmp";
+        } else if (fileNameLower.endsWith(".mp4")) {
+            return "video/mp4";
+        } else if (fileNameLower.endsWith(".avi")) {
+            return "video/avi";
+        } else if (fileNameLower.endsWith(".mov")) {
+            return "video/quicktime";
+        } else if (fileNameLower.endsWith(".webm")) {
+            return "video/webm";
+        } else {
+            return "application/octet-stream";
         }
     }
 
