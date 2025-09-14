@@ -1,24 +1,19 @@
 package com.keshe3.keshe3server.controller;
 
-import com.keshe3.keshe3server.entity.Task;
 import com.keshe3.keshe3server.enums.EMediaType;
-import com.keshe3.keshe3server.enums.ETaskStatus;
 import com.keshe3.keshe3server.resp.TzResp;
 import com.keshe3.keshe3server.service.IMediaService;
 import com.keshe3.keshe3server.service.ITaskService;
 import com.keshe3.keshe3server.service.TaskQueueService;
+import com.keshe3.keshe3server.service.TaskProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,10 +31,7 @@ public class TaskController {
     private TaskQueueService taskQueueService;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Value("${python.server-path}")
-    private String pythonServerPath;
+    private TaskProcessingService taskProcessingService;
 
     /**
      * 添加任务到队列
@@ -54,6 +46,7 @@ public class TaskController {
             String userId = (String) request.getAttribute("userId");
 
             String contentType = file.getContentType();
+
             EMediaType mediaType = EMediaType.IMAGE;
             if (contentType != null && contentType.startsWith("video/")) {
                 mediaType = EMediaType.VIDEO;
@@ -74,59 +67,27 @@ public class TaskController {
             // 保存文件内容到字节数组
             byte[] fileContent = file.getBytes();
 
+            // 获取原始文件名，用于通知
+            String originalFilename = file.getOriginalFilename();
+
+            // 派发任务
             taskQueueService.addTask(() -> {
-                try {
-                    taskService.updateTaskStatus(taskId, ETaskStatus.PROCESSING);
-
-                    // 构建请求头
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-                    // 使用ByteArrayResource在内存中处理文件
-                    ByteArrayResource fileResource = new ByteArrayResource(fileContent) {
-                        @Override
-                        public String getFilename() {
-                            return file.getOriginalFilename();
-                        }
-                    };
-
-                    // 构建请求体
-                    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-                    body.add("file", fileResource);
-
-                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-                    // 发送POST请求
-                    ResponseEntity<String> response = restTemplate.exchange(
-                            pythonServerPath,
-                            HttpMethod.POST,
-                            requestEntity,
-                            String.class
-                    );
-
-                    // 检查响应状态
-                    if (response.getStatusCode() == HttpStatus.OK) {
-                        String resultUrl = response.getBody();
-                        // 保存处理后的链接到任务结果中
-//                        taskService.updateTaskResult(task.getId(), resultUrl);
-                        mediaService.setMediaPath(mediaId, resultUrl);
-                        taskService.updateEndTime(taskId);
-                        taskService.updateTaskStatus(taskId, ETaskStatus.COMPLETED);
-                    } else {
-                        System.out.println("任务失败");
-                        taskService.updateTaskStatus(taskId, ETaskStatus.FAILED);
-                    }
-                } catch (Exception e) {
-                    System.out.println("任务失败error");
-                    taskService.updateTaskStatus(taskId, ETaskStatus.FAILED);
-                    e.printStackTrace();
-                }
+                taskProcessingService.processTask(userId, taskId, mediaId, originalFilename, fileContent);
             });
 
-            return TzResp.success("任务已添加到队列");
+            // 创建一个Map存放要返回的数据
+            Map<String, Object> responseData = new HashMap<>();
+
+            // 将mediaId放入 Map 中
+            responseData.put("mediaId", mediaId);
+
+            // 将这个Map作为成功响应的数据返回
+            return TzResp.success(responseData);
+
         } catch (Exception e) {
             System.out.println("添加任务失败"+e.getMessage());
             return TzResp.fail(500, "添加任务失败: " + e.getMessage());
         }
     }
+
 }

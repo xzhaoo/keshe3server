@@ -101,7 +101,7 @@ public class UserController {
     @PostMapping("register")
     public TzResp<Boolean> register(UserLoginReq req) {
         String userId = userService.addUser(req);
-        if(userService.addUser(req) != null) {
+        if(userId != null) {
             activityLogService.logActivity(userId, "注册", "用户 " + req.getUserName() + "注册成功");
             return TzResp.success(true);
         }
